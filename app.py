@@ -51,7 +51,6 @@ def generate_seed(name, date):
     age_encoded = encode_age(date)
     name_encoded = encode_name(name)
     seed = name_encoded + age_encoded
-    print(name_encoded, age_encoded, seed)
     seed = seed % (2 ^ 32 - 1)
     if seed < 1000:
         seed *= 1000
@@ -101,5 +100,7 @@ def main():
         output_image("Animal", seed)
 
     footer()
+
+
 if __name__ == "__main__":
     main()
