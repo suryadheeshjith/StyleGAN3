@@ -11,6 +11,31 @@ pkl_dict = {"Animal": "https://api.ngc.nvidia.com/v2/models/nvidia/research/styl
             "Painting": "https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/"
                         "versions/1/files/stylegan3-r-metfaces-1024x1024.pkl"}
 
+st.set_page_config(page_title="Param",page_icon="Data/ParamSLogo.jpeg")
+
+
+def footer():
+    footer="""
+            <style>
+            .footer {
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            color: black;
+            text-align: center;
+            }
+            </style>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div class="footer">
+            <p>Credits to the <a href="https://github.com/NVlabs/stylegan3">StyleGAN3 creators</a> <b> <a style='display: block; text-align: center;'">Param Innovation</a> </b></p>
+            </div>
+            """
+    st.markdown(footer,unsafe_allow_html=True)
+
 
 def encode_name(name):
     m_bytes = name.encode("utf-8")
@@ -25,8 +50,9 @@ def encode_age(date):
 def generate_seed(name, date):
     age_encoded = encode_age(date)
     name_encoded = encode_name(name)
-    seed = name_encoded*10 ^ (len(str(name_encoded))) + age_encoded
-    seed = seed % (2^32-1)
+    seed = name_encoded + age_encoded
+    print(name_encoded, age_encoded, seed)
+    seed = seed % (2 ^ 32 - 1)
     if seed < 1000:
         seed *= 1000
 
@@ -45,6 +71,8 @@ def output_image(mode, seed):
 
 
 def main():
+    image = Image.open('Data/ParamHQLogo.png')
+    st.image(image, width=200)
     st.header("If I was _, what would I look like? 🤔")
 
     name = st.text_input("What is your name?", "Name")
@@ -72,6 +100,6 @@ def main():
         output_image("Painting", seed)
         output_image("Animal", seed)
 
-
+    footer()
 if __name__ == "__main__":
     main()
