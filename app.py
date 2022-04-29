@@ -1,6 +1,7 @@
 import streamlit as st
 from gen_images import generate_images
 from PIL import Image
+import datetime
 
 
 pkl_dict = {"Animal": "https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/"
@@ -11,16 +12,20 @@ pkl_dict = {"Animal": "https://api.ngc.nvidia.com/v2/models/nvidia/research/styl
                         "versions/1/files/stylegan3-r-metfaces-1024x1024.pkl"}
 
 
-def encode(name):
+def encode_name(name):
     m_bytes = name.encode("utf-8")
     m_int = int.from_bytes(m_bytes, byteorder='big')
     return m_int
 
 
-def generate_seed(name, age):
-    age = int(age)
-    name_encoded = encode(name)
-    seed = name_encoded*10 ^ (len(str(name_encoded))) + age
+def encode_age(date):
+    return date.year*10000 + date.month*100 + date.day
+
+
+def generate_seed(name, date):
+    age_encoded = encode_age(date)
+    name_encoded = encode_name(name)
+    seed = name_encoded*10 ^ (len(str(name_encoded))) + age_encoded
     seed = seed % (2^32-1)
     if seed < 1000:
         seed *= 1000
@@ -43,9 +48,9 @@ def main():
     st.header("If I was _, what would I look like? 🤔")
 
     name = st.text_input("What is your name?", "Name")
-    age = st.number_input("What is your age?", 0)
+    date = st.date_input("When is your birthday?", datetime.date(2000, 1, 1))
 
-    seed = generate_seed(name, age)
+    seed = generate_seed(name, date)
 
     cols = st.columns(4)
 
